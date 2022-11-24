@@ -1,0 +1,15 @@
+!*.yaml
+!.gitignore
+!*.md
+!*.sh
+!*.js*
+
+secrets.yaml
+
+.ssh
+.storage
+.cloud
+token.txt
+*.log*
+*.db*
+id_rsa*

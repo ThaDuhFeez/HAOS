@@ -1,0 +1,67 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# System Settings
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.30.33.0/24
+
+# Device Tracker
+#device_tracker:
+  #- platform: bluetooth_tracker
+   # host: 192.168.1.226
+  #- platform: bluetooth_le_tracker
+
+#Climate
+climate:
+## Fujitsu Heat Pumps
+   - platform: fujitsu_general_heatpump
+     username: !secret Fujitsu_U
+     password: !secret Fujitsu_P
+     region: 'us'
+     tokenpath: 'token.txt'
+
+notify:
+  - name: HAOS-Belnan
+    platform: twitter
+    consumer_key: !secret Twitter_APIKey
+    consumer_secret: !secret Twitter_APISecret
+    access_token: !secret Twitter_AccToken
+    access_token_secret: !secret Twitter_AccSecret
+
+#Sensors
+sensor:
+## 17Track.net
+  - platform: seventeentrack
+    username: !secret Seventeen_U
+    password: !secret Seventeen_P
+## System Resources
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+      - type: disk_use
+      - type: disk_free
+      - type: memory_use
+      - type: memory_use_percent
+      - type: processor_temperature
+      - type: processor_use
+## Twitter Scrape
+  - platform: scrape
+    name: School Closure
+    resource: https://twitter.com/search?q=%40ccrce_ns%20%22closed%22&src=typed_query
+    select: ".js-tweet-text-container .tweet-text"
+## Youtube Channel Tracker - https://github.com/custom-components/youtube
+  - platform: youtube
+    channel_id: UCUk7VggtJdo9XYTy3Z5QVAw

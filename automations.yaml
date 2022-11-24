@@ -1,0 +1,245 @@
+- id: '1659978788745'
+  alias: Fujitsu - Cool - Main - Day
+  description: ''
+  trigger:
+  - platform: time
+    at: 06:00:00
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: script.1659978710137
+    data: {}
+  mode: single
+- id: '1659978822007'
+  alias: Fujitsu - Cool - Main - Night
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: script.1659978747792
+    data: {}
+  mode: single
+- id: '1664933515953'
+  alias: Fujitsu - Heat - Main - Night
+  description: Set temp & fan speed @ 10 pm
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: script.heat_main_night
+    data: {}
+  mode: single
+- id: '1664933601062'
+  alias: Fujitsu - Heat - Main - Day
+  description: Set temp & fan for day at 4am
+  trigger:
+  - platform: time
+    at: 04:00:00
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: script.heat_main_day
+    data: {}
+  mode: single
+- id: '1665171173664'
+  alias: ItsFunneh - channel_is_live
+  description: send notification when new livestream by ItsFunneh
+  trigger:
+  - platform: state
+    entity_id: sensor.itsfunneh
+    attribute: channel_is_live
+    from: false
+    to: true
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_rmd_11
+    data:
+      message: ItsFunneh - Channel_is_live
+      title: Livestream
+  - service: persistent_notification.create
+    data:
+      title: Youtube Livestream Automation
+      message: ItsFunneh has posted new livestream
+  mode: single
+- id: '1665171251750'
+  alias: ItsFunneh - live
+  description: send notification when new livestream by ItsFunneh
+  trigger:
+  - platform: state
+    entity_id: sensor.itsfunneh
+    attribute: live
+    from: false
+    to: true
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_rmd_11
+    data:
+      message: ItsFunneh is LIVE
+      title: Livestream
+  - service: persistent_notification.create
+    data:
+      title: Youtube Livestream Automation
+      message: ItsFunneh has posted new livestream
+  mode: single
+- id: '1665171295662'
+  alias: ItsFunneh - Stream
+  description: send notification when new livestream by ItsFunneh
+  trigger:
+  - platform: state
+    entity_id: sensor.itsfunneh
+    attribute: stream
+    from: false
+    to: true
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.mobile_app_rmd_11
+    data:
+      message: ItsFunneh is livestreaming
+      title: Livestream
+  - service: persistent_notification.create
+    data:
+      title: Youtube Livestream Automation
+      message: ItsFunneh has posted new livestream
+  mode: single
+- id: '1666363796273'
+  alias: Vacation Mode
+  description: Everything to do when we aren't home
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.vacation_mode
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id:
+      - 120f73be1bc8b1236ea0f9b8644da8ba
+      - 6068d6b2697f2e69e8632a1d81050f2c
+      - 28d3f5bf15ff1fa3713ffa8e86e83d68
+      - 68a0078a8e466182b01c3708d492e052
+      - a19ff67fc70c63b14153ec3bd18e30c3
+  - service: climate.set_temperature
+    data:
+      temperature: 16
+      hvac_mode: heat
+    target:
+      entity_id:
+      - climate.basement
+      - climate.main
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: low
+    target:
+      entity_id:
+      - climate.basement
+      - climate.main
+  - service: remote.send_command
+    data:
+      device: RyleeRGB
+      command: 'Off'
+    target:
+      entity_id: remote.blrm3_remote
+  mode: single
+- id: '1668296901129'
+  alias: Xmas On
+  description: Turn on Christmas lights at 4 pm
+  trigger:
+  - platform: time
+    at: '16:00:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: script.xmas_on
+    data: {}
+  mode: single
+- id: '1668296975116'
+  alias: Xmas Off
+  description: Turn off Christmas lights at 10 pm
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition: []
+  action:
+  - service: script.xmas_off
+    data: {}
+  mode: single
+- id: '1668712631392'
+  alias: RyleeRGB Off @ 10pm
+  description: Automatically turn off Rylees RGB lights at 10 pm each school night
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  - condition: time
+    before: 00:00:00
+    weekday:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+  action:
+  - service: remote.send_command
+    data:
+      device: RyleeRGB
+      command: 'Off'
+    target:
+      entity_id: remote.blrm3_remote
+  mode: single
+- id: '1668713125774'
+  alias: RyleeRGB Off @ 11pm
+  description: Automatically turn off Rylees RGB lights at 10 pm each school night
+  trigger:
+  - platform: time
+    at: '23:00:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  - condition: time
+    before: 00:00:00
+    weekday:
+    - sat
+    - fri
+    after: 00:00:00
+  action:
+  - service: remote.send_command
+    data:
+      device: RyleeRGB
+      command: 'Off'
+    target:
+      entity_id: remote.blrm3_remote
+  mode: single

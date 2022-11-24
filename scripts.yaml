@@ -1,0 +1,279 @@
+'1659978710137':
+  alias: Fujitsu - Cool - Main - Day
+  sequence:
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: low
+    target:
+      entity_id: climate.main
+      area_id: living_room
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: cool
+    target:
+      entity_id: climate.main
+  - service: climate.set_temperature
+    data:
+      temperature: 22
+    target:
+      entity_id: climate.main
+  mode: single
+  icon: mdi:fan
+'1659978747792':
+  alias: Fujistu - Cool - Main - Night
+  sequence:
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: high
+    target:
+      entity_id: climate.main
+      area_id: living_room
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: cool
+    target:
+      entity_id: climate.main
+  - service: climate.set_temperature
+    data:
+      temperature: 22
+    target:
+      entity_id: climate.main
+  mode: single
+  icon: mdi:fan
+climate_basement:
+  alias: Climate Basement Temp Up
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: '{{(state_attr(''climate.basement'' , ''temperature'')|round(0))
+        + 1 }}'
+    target:
+      entity_id:
+      - climate.basement
+  mode: single
+  icon: mdi:thermometer-chevron-up
+climate_basement_temp_down:
+  alias: Climate Basement Temp Down
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: '{{(state_attr(''climate.basement'' , ''temperature'')|round(0))
+        - 1 }}'
+    target:
+      entity_id:
+      - climate.basement
+  mode: single
+  icon: mdi:thermometer-chevron-down
+climate_basement_temp_down_2:
+  alias: Climate Main Temp Down
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: '{{(state_attr(''climate.main'' , ''temperature'')|round(0)) -
+        1 }}'
+    target:
+      entity_id:
+      - climate.main
+  mode: single
+  icon: mdi:thermometer-chevron-down
+climate_main_temp_up:
+  alias: Climate Main Temp Up
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: '{{(state_attr(''climate.main'' , ''temperature'')|round(0)) +
+        1 }}'
+    target:
+      entity_id:
+      - climate.main
+  mode: single
+  icon: mdi:thermometer-chevron-up
+heat_main_day:
+  alias: Fujitsu - Heat - Main - Day
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: 20
+      hvac_mode: heat
+    target:
+      entity_id: climate.main
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: high
+    target:
+      entity_id: climate.main
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id: climate.main
+  mode: single
+  icon: mdi:heat-wave
+heat_main_night:
+  alias: Fujitsu - Heat - Main - Night
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: 18
+      hvac_mode: heat
+    target:
+      entity_id: climate.main
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: high
+    target:
+      entity_id: climate.main
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id: climate.main
+  mode: single
+  icon: mdi:heat-wave
+new_script:
+  alias: _3Learn_IR_Codes
+  sequence:
+  - service: remote.learn_command
+    data:
+      device: Rylee_RGB
+      command_type: ir
+      command:
+      - Blue
+    target:
+      entity_id: remote.blrm3_remote
+  mode: single
+  icon: mdi:head-question-outline
+new_script_2:
+  sequence:
+  - service: remote.learn_command
+    data:
+      device: IR Candles
+      command_type: ir
+      command:
+      - 'On'
+      - 'Off'
+      - Timer-4H
+      - Timer-6H
+      - Mode-FLF
+      - Mode-Light
+      - Mode-SL
+      - Mode-FL
+      - Brightness-Down
+      - Brightness-Up
+    target:
+      entity_id: remote.blrm4_remote
+  mode: single
+  icon: mdi:head-question-outline
+  alias: _4Learn_IR_Codes
+new_script_3:
+  sequence:
+  - service: remote.learn_command
+    data:
+      device: Garage
+      command_type: rf
+      command:
+      - Left
+      - Right
+    target:
+      entity_id: remote.blrm4_remote
+  mode: single
+  icon: mdi:head-question-outline
+  alias: _4Learn_RF_Codes
+xmas_off:
+  alias: Xmas Off
+  sequence:
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id:
+      - 68a0078a8e466182b01c3708d492e052
+      - a974a0dd4065e4eafff6bbacab343715
+      - 7e7154ec2d68d3542be87d4d63ab9279
+      - a19ff67fc70c63b14153ec3bd18e30c3
+      - 67461469f6dfed0ab0955346cfa879d9
+  mode: single
+  icon: mdi:pine-tree
+xmas_on:
+  alias: Xmas On
+  sequence:
+  - service: switch.turn_on
+    data: {}
+    target:
+      device_id:
+      - 68a0078a8e466182b01c3708d492e052
+      - a974a0dd4065e4eafff6bbacab343715
+      - 7e7154ec2d68d3542be87d4d63ab9279
+      - a19ff67fc70c63b14153ec3bd18e30c3
+      - 67461469f6dfed0ab0955346cfa879d9
+  mode: single
+  icon: mdi:pine-tree-box
+4learn_ir_pucks:
+  alias: _4Learn_IR_Pucks
+  sequence:
+  - service: remote.learn_command
+    data:
+      device: IR Pucks
+      command_type: ir
+      command:
+      - 'On'
+      - 'Off'
+      - Warm
+      - White
+      - Natural
+      - Red
+      - Green
+      - Blue
+      - Brightness-Down
+      - Rainbow
+      - Brightness-Up
+      - Brightness-30
+      - Brightness-70
+      - Brightness-100
+      - Timer-HalfHr
+      - Timer-1Hr
+      - Timer-3Hr
+      - Timer-6Hr
+    target:
+      entity_id: remote.blrm4_remote
+  mode: single
+  icon: mdi:head-question-outline
+4learn_ir_candles:
+  alias: _4Learn_IR_Candles
+  sequence:
+  - service: remote.learn_command
+    data:
+      device: IR Candles
+      command_type: ir
+      command:
+      - 'On'
+      - 'Off'
+      - Timer-4Hr
+      - Timer-6Hr
+      - Mode-FLF
+      - Mode-Light
+      - Mode-SL
+      - Mode-FL
+      - Brightness-Down
+      - Brightness-Up
+    target:
+      entity_id: remote.blrm4_remote
+  mode: single
+  icon: mdi:head-question-outline
+4_ir_ryleergb:
+  alias: _4_IR_RyleeRGB
+  sequence:
+  - service: remote.learn_command
+    data:
+      device: RyleeRGB
+      command:
+      - Brightness-Up
+      - Brightness-Down
+      - 'Off'
+      - 'On'
+      - Red
+      - Green
+      - Blue
+      - White
+    target:
+      entity_id: remote.blrm4_remote
+  mode: single

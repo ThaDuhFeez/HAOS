@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<aircast>
+<common>
+<enabled>1</enabled>
+<stop_receiver>0</stop_receiver>
+<media_volume>1.0000</media_volume>
+<latency></latency>
+<codec>flac</codec>
+<artwork></artwork>
+<drift>0</drift>
+<metadata>1</metadata>
+<flush>1</flush>
+</common>
+<main_log>info</main_log>
+<cast_log>info</cast_log>
+<util_log>warn</util_log>
+<log_limit>-1</log_limit>
+<max_players>32</max_players>
+<ports>0:0</ports>
+<binding>?</binding>
+<device>
+<udn>a2a8cef9edc86957fa3b7b1dfea5a59d</udn>
+<name>Living Room speaker+</name>
+<mac>cc:cc:75:83:e4:01</mac>
+<enabled>1</enabled>
+</device>
+<device>
+<udn>977ce219586e8131eea121a4cfc898bf</udn>
+<name>Sony TV+</name>
+<mac>cc:cc:96:2d:fb:e7</mac>
+<enabled>1</enabled>
+</device>
+<device>
+<udn>b4be96b8e971839525085782f81ec985</udn>
+<name>Rec Room speaker+</name>
+<mac>cc:cc:8c:29:3d:a8</mac>
+<enabled>1</enabled>
+</device>
+</aircast>
