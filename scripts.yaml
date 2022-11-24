@@ -277,3 +277,10 @@ xmas_on:
     target:
       entity_id: remote.blrm4_remote
   mode: single
+update_haos_on_gihub:
+  alias: Update HAOS on Gihub
+  sequence:
+  - service: shell_command.github_auto_update
+    data: {}
+  mode: single
+  icon: mdi:github
