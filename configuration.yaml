@@ -60,11 +60,11 @@ sensor:
 ## Twitter Scrape
   - platform: scrape
     name: School Closure
-    resource: https://twitter.com/search?q=%40ccrce_ns%20%22closed%22&src=typed_query
+    resource: !secret Twitter_Search
     select: ".js-tweet-text-container .tweet-text"
 ## Youtube Channel Tracker - https://github.com/custom-components/youtube
   - platform: youtube
-    channel_id: UCUk7VggtJdo9XYTy3Z5QVAw
+    channel_id: !secret ItsFunneh_ID
     
 # Shell Commands
 shell_command:
