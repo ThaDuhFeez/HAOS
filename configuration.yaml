@@ -70,4 +70,4 @@ sensor:
 shell_command:
   github_auto_update: /bin/bash pushupdate.sh
   
-  # making random change to config file
+  # making random change to config
