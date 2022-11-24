@@ -65,3 +65,7 @@ sensor:
 ## Youtube Channel Tracker - https://github.com/custom-components/youtube
   - platform: youtube
     channel_id: UCUk7VggtJdo9XYTy3Z5QVAw
+    
+# Shell Commands
+shell_command:
+  github_auto_update: /bin/bash pushupdate.sh
