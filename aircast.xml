@@ -19,6 +19,24 @@
 <ports>0:0</ports>
 <binding>?</binding>
 <device>
+<udn>1075cf0894065847404f67ef0a178954</udn>
+<name>Living Room Cast+</name>
+<mac>cc:cc:b7:af:06:a7</mac>
+<enabled>1</enabled>
+</device>
+<device>
+<udn>4CA05E81-EFFC-4663-8AC7-8E371F2F2A7C</udn>
+<name>Living Room+</name>
+<mac>cc:cc:21:01:d5:6c</mac>
+<enabled>1</enabled>
+</device>
+<device>
+<udn>FCBD558E-5A0A-4009-A957-0A7C5329BF8D</udn>
+<name>All Devices+</name>
+<mac>cc:cc:eb:13:5b:f2</mac>
+<enabled>1</enabled>
+</device>
+<device>
 <udn>a2a8cef9edc86957fa3b7b1dfea5a59d</udn>
 <name>Living Room speaker+</name>
 <mac>cc:cc:75:83:e4:01</mac>

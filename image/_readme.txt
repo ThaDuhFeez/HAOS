@@ -1,0 +1,1 @@
+Images should be saved in \config\www\images

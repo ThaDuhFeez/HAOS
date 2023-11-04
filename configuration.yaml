@@ -6,12 +6,30 @@ default_config:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+simpleicons:
 frontend:
   themes: !include_dir_merge_named themes
+  extra_module_url:
+    - /local/community/custom-brand-icons/custom-brand-icons.js
+
+# Extra Sidebar Menu Options - IP's don't work ???
+# panel_iframe:
+#   router:
+#     title: "Router"
+#     url: "https://192.168.1.1
+#     require_admin: true
+#     icon: mdi:router-wireless-settings
+#   nas:
+#     title: "NAS"
+#     url: "https://192.168.1.200"
+#     require_admin: true
+#     icon: mdi:nas
 
 # Text to speech
 tts:
   - platform: google_translate
+    language: en
+    tld: ca
 
 http:
   use_x_forwarded_for: true
@@ -32,6 +50,10 @@ climate:
      password: !secret Fujitsu_P
      region: 'us'
      tokenpath: 'token.txt'
+   - platform: generic_thermostat
+     name: Basement Bedroom
+     heater: switch.basement_heater
+     target_sensor: sensor.ewelink_th01_temperature
 
 notify:
   - name: HAOS-Belnan
@@ -40,6 +62,15 @@ notify:
     consumer_secret: !secret Twitter_APISecret
     access_token: !secret Twitter_AccToken
     access_token_secret: !secret Twitter_AccSecret
+
+#Device Tracker
+device_tracker:
+  - platform: ddwrt
+    host: 192.168.1.1
+    username: admin
+    password: "!Balefir3"
+    #password: "Timew8s4no1@"
+    ssl: true
 
 #Sensors
 sensor:
@@ -54,17 +85,53 @@ sensor:
       - type: disk_use
       - type: disk_free
       - type: memory_use
+      - type: memory_free
       - type: memory_use_percent
       - type: processor_temperature
       - type: processor_use
-## Twitter Scrape
-  - platform: scrape
-    name: School Closure
-    resource: !secret Twitter_Search
-    select: ".js-tweet-text-container .tweet-text"
+      #- type: ipv4_address
+## Twitter
+  - platform: rest
+    name: School Closed
+    resource: https://api.twitter.com/1.1/search/tweets.json
+    value_template: '{{ value_json.statuses[0].text }}'
+    scan_interval: 1800
+    headers:
+      Authorization: Bearer !secret Twitter_AccToken
+    params:
+      q: 'from:CCRCE_NS closed'
+  - platform: rest
+    name: School Paved
+    resource: https://api.twitter.com/1.1/search/tweets.json
+    value_template: '{{ value_json.statuses[0].text }}'
+    scan_interval: 1800
+    headers:
+      Authorization: Bearer !secret Twitter_AccToken
+    params:
+      q: 'from:CCRCE_NS Paved'
+  - platform: rest
+    name: "ThaDuffman Test"
+    resource: https://api.twitter.com/1.1/search/tweets.json
+    value_template: '{{ value_json.statuses[0].text }}'
+    scan_interval: 1800
+    headers:
+      Authorization: Bearer !secret Twitter_AccToken
+    params:
+      q: 'from:ThaDuffman Test'
+  - platform: rest
+    name: ccrce_ns_tweets
+    resource: https://api.twitter.com/1.1/search/tweets.json?q=from%3Accrce_ns%20closed
+    headers:
+      Authorization: Bearer !secret Twitter_Bearer
+    value_template: '{{ value_json.statuses[0].text }}'
+    scan_interval: 1800
+
 ## Youtube Channel Tracker - https://github.com/custom-components/youtube
   - platform: youtube
     channel_id: !secret ItsFunneh_ID
+    
+#Binary Sensors
+
     
 # Shell Commands
 shell_command:

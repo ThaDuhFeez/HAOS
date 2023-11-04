@@ -112,20 +112,19 @@ heat_main_day:
 heat_main_night:
   alias: Fujitsu - Heat - Main - Night
   sequence:
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id: climate.main
   - service: climate.set_temperature
     data:
-      temperature: 18
-      hvac_mode: heat
+      temperature: 17
     target:
       entity_id: climate.main
   - service: climate.set_fan_mode
     data:
-      fan_mode: high
-    target:
-      entity_id: climate.main
-  - service: climate.set_hvac_mode
-    data:
-      hvac_mode: heat
+      fan_mode: low
     target:
       entity_id: climate.main
   mode: single
@@ -187,10 +186,9 @@ xmas_off:
     target:
       device_id:
       - 68a0078a8e466182b01c3708d492e052
+      - a19ff67fc70c63b14153ec3bd18e30c3
       - a974a0dd4065e4eafff6bbacab343715
       - 7e7154ec2d68d3542be87d4d63ab9279
-      - a19ff67fc70c63b14153ec3bd18e30c3
-      - 67461469f6dfed0ab0955346cfa879d9
   mode: single
   icon: mdi:pine-tree
 xmas_on:
@@ -201,10 +199,9 @@ xmas_on:
     target:
       device_id:
       - 68a0078a8e466182b01c3708d492e052
+      - a19ff67fc70c63b14153ec3bd18e30c3
       - a974a0dd4065e4eafff6bbacab343715
       - 7e7154ec2d68d3542be87d4d63ab9279
-      - a19ff67fc70c63b14153ec3bd18e30c3
-      - 67461469f6dfed0ab0955346cfa879d9
   mode: single
   icon: mdi:pine-tree-box
 4learn_ir_pucks:
@@ -284,3 +281,76 @@ update_haos_on_gihub:
     data: {}
   mode: single
   icon: mdi:github
+basement_bed_heater_on:
+  alias: Basement Bed - Heater - On
+  sequence:
+  - service: switch.turn_on
+    data: {}
+    target:
+      device_id: 67461469f6dfed0ab0955346cfa879d9
+  mode: single
+  icon: mdi:radiator
+basement_bed_heater_off:
+  alias: Basement Bed - Heater - Off
+  sequence:
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: 67461469f6dfed0ab0955346cfa879d9
+  mode: single
+  icon: mdi:radiator-disabled
+4learn_ir_heatpump:
+  alias: _4Learn_IR_HeatPump
+  sequence:
+  - service: remote.learn_command
+    data:
+      command_type: ir
+      device: Fujitsu_Main
+      command:
+      - Fan-Auto
+    target:
+      entity_id: remote.blrm4_remote
+  mode: single
+  icon: mdi:head-question-outline
+'1696355867615':
+  alias: Fujitsu - Heat - Base - Day
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: 20
+      hvac_mode: heat
+    target:
+      entity_id: climate.basement
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: high
+    target:
+      entity_id: climate.basement
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id: climate.basement
+  mode: single
+  icon: mdi:heat-wave
+'1696355921629':
+  alias: Fujitsu - Heat - Base - Night
+  sequence:
+  - service: climate.set_temperature
+    data:
+      temperature: 17
+      hvac_mode: heat
+    target:
+      entity_id: climate.basement
+  - service: climate.set_fan_mode
+    data:
+      fan_mode: low
+    target:
+      entity_id: climate.basement
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id: climate.basement
+  mode: single
+  icon: mdi:heat-wave

@@ -1,0 +1,10 @@
+{
+    "name": "node-red-project",
+    "description": "A Node-RED Project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "node-red-contrib-twitter-follow": "~0.0.8",
+        "node-red-contrib-twitter-stream": "~1.5.0"
+    }
+}

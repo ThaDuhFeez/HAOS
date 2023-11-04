@@ -54,78 +54,6 @@
   - service: script.heat_main_day
     data: {}
   mode: single
-- id: '1665171173664'
-  alias: ItsFunneh - channel_is_live
-  description: send notification when new livestream by ItsFunneh
-  trigger:
-  - platform: state
-    entity_id: sensor.itsfunneh
-    attribute: channel_is_live
-    from: false
-    to: true
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-  condition: []
-  action:
-  - service: notify.mobile_app_rmd_11
-    data:
-      message: ItsFunneh - Channel_is_live
-      title: Livestream
-  - service: persistent_notification.create
-    data:
-      title: Youtube Livestream Automation
-      message: ItsFunneh has posted new livestream
-  mode: single
-- id: '1665171251750'
-  alias: ItsFunneh - live
-  description: send notification when new livestream by ItsFunneh
-  trigger:
-  - platform: state
-    entity_id: sensor.itsfunneh
-    attribute: live
-    from: false
-    to: true
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-  condition: []
-  action:
-  - service: notify.mobile_app_rmd_11
-    data:
-      message: ItsFunneh is LIVE
-      title: Livestream
-  - service: persistent_notification.create
-    data:
-      title: Youtube Livestream Automation
-      message: ItsFunneh has posted new livestream
-  mode: single
-- id: '1665171295662'
-  alias: ItsFunneh - Stream
-  description: send notification when new livestream by ItsFunneh
-  trigger:
-  - platform: state
-    entity_id: sensor.itsfunneh
-    attribute: stream
-    from: false
-    to: true
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-  condition: []
-  action:
-  - service: notify.mobile_app_rmd_11
-    data:
-      message: ItsFunneh is livestreaming
-      title: Livestream
-  - service: persistent_notification.create
-    data:
-      title: Youtube Livestream Automation
-      message: ItsFunneh has posted new livestream
-  mode: single
 - id: '1666363796273'
   alias: Vacation Mode
   description: Everything to do when we aren't home
@@ -165,36 +93,52 @@
     data:
       device: RyleeRGB
       command: 'Off'
+      num_repeats: 1
+      delay_secs: 0.4
+      hold_secs: 0
     target:
       entity_id: remote.blrm3_remote
+  - service: input_number.set_value
+    data:
+      value: 10
+    target:
+      entity_id: input_number.basement_bedroom_temp_min
+  - service: input_number.set_value
+    data:
+      value: 11
+    target:
+      entity_id: input_number.basement_bedroom_temp_max
   mode: single
 - id: '1668296901129'
-  alias: Xmas On
+  alias: Xmas - Turn on lights @ 4 pm
   description: Turn on Christmas lights at 4 pm
   trigger:
   - platform: time
     at: '16:00:00'
   condition:
   - condition: state
-    entity_id: input_boolean.vacation_mode
-    state: 'off'
+    state: 'on'
+    entity_id: input_boolean.xmas_season
   action:
   - service: script.xmas_on
     data: {}
   mode: single
 - id: '1668296975116'
-  alias: Xmas Off
+  alias: Xmas - Turn off lights @ 10 pm
   description: Turn off Christmas lights at 10 pm
   trigger:
   - platform: time
     at: '22:00:00'
-  condition: []
+  condition:
+  - condition: state
+    entity_id: input_boolean.xmas_season
+    state: 'on'
   action:
   - service: script.xmas_off
     data: {}
   mode: single
 - id: '1668712631392'
-  alias: RyleeRGB Off @ 10pm
+  alias: Rylee - RGB - Off @ 10pm (Weekdays)
   description: Automatically turn off Rylees RGB lights at 10 pm each school night
   trigger:
   - platform: time
@@ -216,12 +160,15 @@
     data:
       device: RyleeRGB
       command: 'Off'
+      num_repeats: 1
+      delay_secs: 0.4
+      hold_secs: 0
     target:
       entity_id: remote.blrm3_remote
   mode: single
 - id: '1668713125774'
-  alias: RyleeRGB Off @ 11pm
-  description: Automatically turn off Rylees RGB lights at 10 pm each school night
+  alias: Rylee - RGB - Off @ 11pm (Weekends)
+  description: Automatically turn off Rylees RGB lights at 11 pm on the weekends
   trigger:
   - platform: time
     at: '23:00:00'
@@ -240,6 +187,488 @@
     data:
       device: RyleeRGB
       command: 'Off'
+      num_repeats: 1
+      delay_secs: 0.4
+      hold_secs: 0
     target:
       entity_id: remote.blrm3_remote
+  mode: single
+- id: '1669678786805'
+  alias: Low Battery
+  description: Send a notification to Ryan’s iPhone if the battery gets too low.
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.ewelink_th01_battery
+    below: 25
+  condition: []
+  action:
+  - service: notify.mobile_app_rmd_11
+    data:
+      message: Battery is below 25%. Get a new battery
+  mode: single
+- id: '1669841741643'
+  alias: Garage - Lights - Workday Winter Lights
+  description: Turn on garage lights in the morning so I can see
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition:
+  - condition: sun
+    before: sunrise
+    before_offset: '10'
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      device_id: 7e7154ec2d68d3542be87d4d63ab9279
+  - delay:
+      hours: 1
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: 7e7154ec2d68d3542be87d4d63ab9279
+  mode: single
+- id: '1676829322072'
+  alias: Rylee - Reminder - Morning School
+  description: Have the Living Room speaker tell Rylee when it’s time to get ready
+    for school
+  trigger:
+  - platform: time
+    at: 07:35:00
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.school
+    state: 'on'
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.living_room_speaker
+      message: Riley, 5 more minutes until it’s time to get ready for school
+      language: en
+      cache: false
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.living_room_speaker
+      message: Riley, it’s time to take Charlie outside , put him in his cage, and
+        then go catch the bus
+      language: en
+      cache: false
+  mode: single
+- id: '1676831628582'
+  alias: Rylee - Reminder - Daily Chores
+  description: A reminder for Rylee on her phone and all speakers to do her daily
+    chores
+  trigger:
+  - platform: time
+    at: '15:30:00'
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.living_room_speaker
+      message: Riley, it’s time to do your daily chores. That means cleanup Gracie’s
+        poop off the floor, pee from the litter box, and make sure she has fresh water
+        and food.
+      language: en
+      cache: false
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.rec_room_speaker
+      message: Riley, it’s time to do your daily chores. That means cleanup Gracie’s
+        poop off the floor, pee from the litter box, and make sure she has fresh water
+        and food.
+      language: en
+      cache: false
+  - service: notify.mobile_app_rgd8
+    data:
+      title: Time For Chores
+      message: "\U0001F4A9 off the floor \U0001F4A6 pee from the litter & \U0001F372
+        food in kitchen"
+  mode: single
+- id: '1676916060640'
+  alias: Basement Bedroom - Temp - School Hrs
+  description: Set min & max temps for school days
+  trigger:
+  - platform: time
+    at: 06:59:00
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    before: '14:00:00'
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: input_number.set_value
+    data:
+      value: 13
+    target:
+      entity_id: input_number.basement_bedroom_temp_min
+  - service: input_number.set_value
+    data:
+      value: 14
+    target:
+      entity_id: input_number.basement_bedroom_temp_max
+  mode: single
+- id: '1676916897584'
+  alias: Basement Bedroom - Temp - After School
+  description: Set min & max temps for after school days
+  trigger:
+  - platform: time
+    at: '13:59:00'
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: input_number.set_value
+    data:
+      value: 18
+    target:
+      entity_id: input_number.basement_bedroom_temp_min
+  - service: input_number.set_value
+    data:
+      value: 19
+    target:
+      entity_id: input_number.basement_bedroom_temp_max
+  mode: single
+- id: '1676917291451'
+  alias: Basement Bedroom - Heat Off
+  description: Turn off the heater if greater than max temp
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.ewelink_th01_temperature
+    above: input_number.basement_bedroom_temp_max
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: 67461469f6dfed0ab0955346cfa879d9
+  mode: single
+- id: '1676917423810'
+  alias: Basement Bedroom - Heat On
+  description: Turn on the heat in the basement bedroom if the temperature goes below
+    the minimum
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.ewelink_th01_temperature
+    below: input_number.basement_bedroom_temp_min
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.basement_heater
+  mode: single
+- id: '1676926709747'
+  alias: Basement Bedroom - Temp - Weekends
+  description: Set min & max temps for weekends
+  trigger:
+  - platform: time
+    at: 00:01:00
+  condition:
+  - condition: time
+    weekday:
+    - sun
+    - sat
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: input_number.set_value
+    data:
+      value: 16
+    target:
+      entity_id: input_number.basement_bedroom_temp_min
+  - service: input_number.set_value
+    data:
+      value: 17
+    target:
+      entity_id: input_number.basement_bedroom_temp_max
+  mode: single
+- id: '1678746934061'
+  alias: Rylee - Reminder - Summer - Breakfast
+  description: Remind Rylee to have some breakfast at 930
+  trigger:
+  - platform: time
+    at: 09:30:00
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: state
+    entity_id: input_boolean.school
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.living_room_speaker
+      message: Riley, it’s time to have some breakfast
+      language: en
+      cache: false
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.rec_room_speaker
+      message: Riley, it’s time to have some breakfast
+      language: en
+      cache: false
+  - service: notify.mobile_app_rgd8
+    data:
+      title: Time For Chores
+      message: Riley, it’s time to have some breakfast
+  mode: single
+- id: '1678747145587'
+  alias: Rylee - Reminder - Summer - Lunch
+  description: Remind Rylee to eat lunch at noon during the summer
+  trigger:
+  - platform: time
+    at: '12:30:00'
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.living_room_speaker
+      message: Riley, it’s time to rinse out your nose and have some lunch
+      language: en
+      cache: false
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.rec_room_speaker
+      message: Riley, it’s time to rinse out your nose and have some lunch
+      language: en
+      cache: false
+  - service: notify.mobile_app_rgd8
+    data:
+      title: Time For Chores
+      message: Riley, it’s time to rinse out your nose and have some lunch
+  mode: single
+- id: '1680128627798'
+  alias: Water Leak - Utility Room
+  description: Notify EVERYONE that there is a water leak in the utility room
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.water_leak_aqara_iaszone
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_app_cyk_11
+    data:
+      message: There is a water leak in the utility room
+      title: "\U0001F4A6 Water Leak \U0001F4A6 "
+  - service: notify.mobile_app_rgd8
+    data:
+      title: "\U0001F4A6 Water Leak \U0001F4A6 "
+      message: There is a water leak in the utility room
+  - service: notify.mobile_app_rmd_11
+    data:
+      message: There is a water leak in the utility room
+      title: "\U0001F4A6 Water Leak \U0001F4A6 "
+  - service: notify.mobile_app_rmd_sg9
+    data:
+      message: There is a water leak in the utility room
+      title: "\U0001F4A6 Water Leak \U0001F4A6 "
+  - service: notify.haos_belnan
+    data:
+      message: There is a water leak in the utility room
+      title: "\U0001F4A6 Water Leak \U0001F4A6 "
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.rec_room_speaker
+      message: Warning. There is a leak in the utility room
+      language: en
+      cache: false
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.living_room_speaker
+      message: Warning. There is a leak in the utility room
+      language: en
+      cache: false
+  mode: single
+- id: '1681247447821'
+  alias: 'Outdoor Temperature '
+  description: Bring Met.No temperature into its own entity
+  trigger:
+  - platform: state
+    entity_id:
+    - weather.home
+    attribute: temperature
+  condition: []
+  action:
+  - service: input_number.set_value
+    data:
+      value: '{{ state_attr(''weather.home'', ''temperature'') }}
+
+        '
+    target:
+      entity_id: input_number.temperature_outdoor
+  mode: single
+- id: '1693659961535'
+  alias: Auto Off Scentsy - Master
+  description: Turn off the master Scentsy after 30 mins
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.master_bathroom_scentsy_socket_1
+    to: 'on'
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: 120f73be1bc8b1236ea0f9b8644da8ba
+  mode: single
+- id: '1693924489701'
+  alias: Auto off Basement
+  description: Turn off the basement Scentsy after 30 mins
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.basement_bathroom_scentsy_socket_1
+    to: 'on'
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: 28d3f5bf15ff1fa3713ffa8e86e83d68
+  mode: single
+- id: '1693924687034'
+  alias: Auto Off Scentsy - Main
+  description: Turn off the main Scentsy after 30 mins
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.main_bathroom_scentsy_socket_1
+    to: 'on'
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: 6068d6b2697f2e69e8632a1d81050f2c
+  mode: single
+- id: '1696355983210'
+  alias: Fujitsu - Heat - Base - Day
+  description: Set temp & fan for day at 4am
+  trigger:
+  - platform: time
+    at: 04:00:00
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: script.1696355867615
+    data: {}
+  mode: single
+- id: '1696356306800'
+  alias: Fujitsu - Heat - Base - Night
+  description: Set temp & fan speed @ 10 pm
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition:
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: script.1696355921629
+    data: {}
+  mode: single
+- id: '1697407104671'
+  alias: Basement Bedroom - Temp - Weekend Bedtime
+  description: Set min & max temps for weekends
+  trigger:
+  - platform: time
+    at: '20:00:00'
+  condition:
+  - condition: time
+    weekday:
+    - sun
+    - sat
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state: 'off'
+  action:
+  - service: input_number.set_value
+    data:
+      value: 18
+    target:
+      entity_id: input_number.basement_bedroom_temp_min
+  - service: input_number.set_value
+    data:
+      value: 19
+    target:
+      entity_id: input_number.basement_bedroom_temp_max
   mode: single
